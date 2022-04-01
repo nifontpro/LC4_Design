@@ -23,7 +23,6 @@ fun BottomNavigationBar(
     BottomNavigation(
         modifier = modifier,
         backgroundColor = MaterialTheme.colors.surface,
-        elevation = 5.dp
     ) {
         items.forEach { item ->
             val selected = item.route == backStackEntry.value?.destination?.route
@@ -32,7 +31,7 @@ fun BottomNavigationBar(
                 onClick = {
                     onItemClick(item)
                 },
-                selectedContentColor = MaterialTheme.colors.secondaryVariant,
+                selectedContentColor = MaterialTheme.colors.secondary,
                 unselectedContentColor = MaterialTheme.colors.onSurface,
                 icon = {
                     Row(
