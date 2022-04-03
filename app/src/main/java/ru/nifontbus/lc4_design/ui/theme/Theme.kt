@@ -11,6 +11,7 @@ private val DarkColorPalette = darkColors(
     secondaryVariant = SecondaryVariantDark,
     surface = SurfaceDark,
     onSurface = OnSurfaceDark,
+    onBackground = OnBackgroundDark,
 )
 
 @Composable
