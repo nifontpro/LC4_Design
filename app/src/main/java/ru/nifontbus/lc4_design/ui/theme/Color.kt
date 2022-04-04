@@ -15,3 +15,5 @@ val SecondaryVariantDark = Color(0xFF009999)
 
 val Transparent10 = Color(0x10000000)
 val DarkGray = Color(0xFF333333)
+val SafeGreen = Color(0xFF00CC99)
+val SafeBlue = Color(0xFF3399CC)

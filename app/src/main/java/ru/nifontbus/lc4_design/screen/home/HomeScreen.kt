@@ -5,20 +5,20 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Sailing
 import androidx.compose.material.icons.filled.VideoCameraFront
-import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material.icons.outlined.Tune
-import androidx.compose.material.icons.outlined.WatchLater
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -26,10 +26,16 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import ru.nifontbus.lc4_design.R
-import ru.nifontbus.lc4_design.ui.theme.DarkGray
+import ru.nifontbus.lc4_design.screen.component.CircleIcon
+import ru.nifontbus.lc4_design.screen.component.ColorIcon
+import ru.nifontbus.lc4_design.screen.component.IconClock
+import ru.nifontbus.lc4_design.screen.component.surfaceBrush
+import ru.nifontbus.lc4_design.ui.theme.SafeBlue
+import ru.nifontbus.lc4_design.ui.theme.SafeGreen
 import ru.nifontbus.lc4_design.ui.theme.Transparent10
 
 @Composable
@@ -45,14 +51,14 @@ fun HomeScreen(
             HomeTopBar(state.userName)
         }
     ) {
-        Column(
-//            verticalArrangement = Arrangement.SpaceBetween,
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(10.dp)
         ) {
-            ReadyExamsCard(state)
-            Classes()
+            item { ReadyExamsCard(state) }
+            item { Classes() }
+            item { Homework(state) }
         }
     }
 }
@@ -192,11 +198,11 @@ private fun BoxedNum(num: Int) {
 }
 
 @Composable
-fun Classes() {
+private fun Classes() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 24.dp)
+            .padding(vertical = 12.dp)
     ) {
         Row(
             modifier = Modifier
@@ -221,12 +227,12 @@ fun Classes() {
 }
 
 @Composable
-fun ClassesCard() {
+private fun ClassesCard() {
     Card(
         shape = MaterialTheme.shapes.large,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
+            .padding(top = 8.dp),
         elevation = 4.dp
     ) {
         Row(
@@ -235,23 +241,7 @@ fun ClassesCard() {
                 .background(MaterialTheme.colors.surface),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(16.dp)
-                    .clip(CircleShape)
-                    .background(DarkGray)
-
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Sailing,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .padding(12.dp)
-                )
-            }
-
+            CircleIcon(Icons.Default.Sailing, Modifier.weight(1f))
             Column(modifier = Modifier.weight(3f)) {
                 Text(
                     text = "History",
@@ -262,14 +252,7 @@ fun ClassesCard() {
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        imageVector = Icons.Outlined.WatchLater,
-                        contentDescription = "clock",
-                        tint = MaterialTheme.colors.onBackground,
-                        modifier = Modifier
-                            .size(20.dp)
-                            .padding(end = 4.dp)
-                    )
+                    IconClock()
                     Text(
                         text = "8:00 - 8:45",
                         style = MaterialTheme.typography.body2,
@@ -316,9 +299,105 @@ fun ClassesCard() {
 }
 
 @Composable
-fun surfaceBrush() = Brush.linearGradient(
-    colors = listOf(
-        MaterialTheme.colors.secondary,
-        MaterialTheme.colors.secondaryVariant
+private fun Homework(state: ScreenState) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 12.dp)
+    ) {
+
+        Text(
+            text = "Homework",
+            style = MaterialTheme.typography.body1,
+            color = MaterialTheme.colors.onSurface
+        )
+        HomeworkList(state)
+    }
+}
+
+@Composable
+fun HomeworkList(state: ScreenState) {
+
+    LazyRow(modifier = Modifier.padding(top = 16.dp)) {
+        items(state.homework) { homework ->
+            HomeworkCard(homework)
+        }
+    }
+}
+
+@Preview
+@Composable
+fun HomePreview() {
+    HomeworkCard(
+        homework = Homework(
+            name = "Literature",
+            daysLeft = 2,
+            title = "Read scenes 1.1-1.12 of The Master and Margarita."
+        )
     )
-)
+}
+
+@Composable
+fun HomeworkCard(homework: Homework) {
+    Card(
+        shape = MaterialTheme.shapes.large,
+        modifier = Modifier
+            .width(250.dp)
+            .padding(end = 16.dp),
+        elevation = 4.dp
+    ) {
+        Column(
+            modifier = Modifier
+                .background(MaterialTheme.colors.surface)
+                .padding(18.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Column(
+                    verticalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = homework.name,
+                        style = MaterialTheme.typography.body1,
+                        color = MaterialTheme.colors.onSurface,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconClock()
+                        Text(
+                            text = "${homework.daysLeft} days left",
+                            style = MaterialTheme.typography.body2,
+                            color = MaterialTheme.colors.onBackground,
+                            modifier = Modifier.padding(vertical = 4.dp)
+                        )
+                    }
+                }
+                CircleIcon(image = Icons.Outlined.AutoStories, Modifier)
+            } //row
+            Text(
+                text = homework.title,
+                style = MaterialTheme.typography.body2,
+                color = MaterialTheme.colors.onSurface,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+            Row {
+                ColorIcon(
+                    image = Icons.Outlined.Face,
+                    modifier = Modifier,
+                    background = SafeGreen,
+                    tint = Color.White
+                )
+                ColorIcon(
+                    image = Icons.Outlined.InsertEmoticon,
+                    modifier = Modifier.offset(x = (-8).dp),
+                    background = SafeBlue,
+                    tint = Color.White
+                )
+            }
+        } // column
+    }
+}
